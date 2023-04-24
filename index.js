@@ -9,6 +9,23 @@ let worksheet4 = workbook.Sheets[workbook.SheetNames[4]];
 let worksheet5 = workbook.Sheets[workbook.SheetNames[5]];
 let worksheet6 = workbook.Sheets[workbook.SheetNames[6]];
 
+
+function currentCalcRe(p , q , v , a){
+    var reI  = ((p*Math.cos(((Math.PI)*a)/180) + q*Math.sin(((Math.PI)*a)/180) )/v)*1000;
+    return reI;
+}
+
+function currentCalcIm(p , q , v , a){
+    var imI  = ((q*Math.cos(((Math.PI)*a)/180) - p*Math.sin(((Math.PI)*a)/180) )/v)*1000;
+    return imI;
+}
+
+var I0r = currentCalcRe(60 ,40 , 11000 , 0) ; //1st node(leaf)  current calc.(re)
+var I0i = currentCalcIm(60 ,40 , 11000 , 0) ; //1st node(leaf)  current calc.(Im)
+var V0r = 11000*Math.cos(((Math.PI)*0)/180); //1st node(leaf)  voltage calc.(re)
+var V0i = 11000*Math.sin(((Math.PI)*0)/180); //1st node(leaf)  voltage calc.(Im)
+
+
 //Child 1 -- Leaf (Senate hall)
 for(let i = 2 ; i < 10 ; i++){
     const nodes =  worksheet['A' + i].v;
@@ -16,11 +33,21 @@ for(let i = 2 ; i < 10 ; i++){
     const x =  worksheet['C' + i].v;
     const p =  worksheet['D' + i].v;
     const q =  worksheet['E' + i].v;
-    
+
+    // var reI  = Math.cos(((Math.PI)*60)/180);
+    // console.log(reI);  //is working
     var z = Math.sqrt((r * r) + (x * x));
 
+    var Vnr = V0r + r*I0r; //node voltage (Re) 
+    var Vni = V0i + x*I0i; //node voltage(Im)
+    console.log("The Voltage of "+ nodes + " is :" + Vnr + " +j" + Vni );
+    V0r = Vnr;
+    V0i = Vni;
+    
+    // var s = Math.sqrt((p*p) + (q*q));
+
     console.log({
-       nodes, z 
+       nodes, z , 
     })
 }
 
