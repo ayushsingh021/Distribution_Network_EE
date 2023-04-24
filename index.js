@@ -1,3 +1,5 @@
+//i referred page 287 of Book for formulae and calculation method
+
 var XLSX = require("xlsx");
 var workbook =  XLSX.readFile("data/table.xlsx");
 
@@ -36,19 +38,41 @@ for(let i = 2 ; i < 10 ; i++){
 
     // var reI  = Math.cos(((Math.PI)*60)/180);
     // console.log(reI);  //is working
-    var z = Math.sqrt((r * r) + (x * x));
 
+    //impedence calc.
+    var z = Math.sqrt((r * r) + (x * x));
+     
+    console.log({
+        nodes, z , 
+     })
+    //voltage calc
     var Vnr = V0r + r*I0r; //node voltage (Re) 
     var Vni = V0i + x*I0i; //node voltage(Im)
+    var VnT = Math.sqrt((Vnr * Vnr)+( Vni * Vni));
+
+    let tanInverseRadians = Math.atan(Vni/Vnr);
+    let tanInverseDegrees = tanInverseRadians * (180/Math.PI);
+
     console.log("The Voltage of "+ nodes + " is :" + Vnr + " +j" + Vni );
-    V0r = Vnr;
+    V0r = Vnr; //updation
     V0i = Vni;
-    
+
+    //current calc.
+    var I1r = 0 ;  //imitialize
+    var I1i= 0 ;
+    if(i!=2){
+        var  I1r = currentCalcRe(p, q , VnT , tanInverseDegrees); 
+        var  I1i = currentCalcIm(p, q , VnT , tanInverseDegrees); 
+    }
+    var Inr = (I0r + I1r);  //node current re (from prev node to new node)
+    var Ini = (I0i + I1i);   //node current im (from prev node to new node)
+    console.log("The Current from "+ nodes + " is :" + Inr + " +j" + Ini );
+    console.log("    **************    ")
+    I0r = Inr;
+    I0i = Ini ;
     // var s = Math.sqrt((p*p) + (q*q));
 
-    console.log({
-       nodes, z , 
-    })
+  
 }
 
 //Child  2-- Leaf (Residential Area -1)
